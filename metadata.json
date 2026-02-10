@@ -1,0 +1,8 @@
+{
+  "name": "Bookly - Chat-to-Sale Utility",
+  "description": "An accessibility-driven mobile utility that transforms unstructured chat dialogue into structured sales, inventory updates, and professional invoices using AI-powered extraction.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

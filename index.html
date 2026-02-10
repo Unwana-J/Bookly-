@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookly - Chat Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0F172A;
+            --mint: #2DD4BF;
+            --sage: #F0FDF4;
+            --slate: #64748B;
+            --pale-mint: #CCFBF1;
+            --text-on-dark: #CBD5E1;
+        }
+
+        html, body {
+            height: auto;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--sage);
+            color: var(--navy);
+            -webkit-tap-highlight-color: transparent;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Platform Shadow Logo Watermark */
+        .shadow-watermark {
+            position: fixed;
+            top: 50%;
+            left: 55%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vw;
+            max-width: 800px;
+            max-height: 800px;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.03;
+            color: var(--navy);
+        }
+
+        /* High contrast subtext on dark backgrounds */
+        .text-muted-on-dark {
+            color: var(--text-on-dark);
+        }
+
+        /* 8px Grid Helpers */
+        .spacing-8 { padding: 2rem; }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+
+        .cyber-border {
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            background: #FFFFFF;
+            border-radius: 24px;
+        }
+
+        .available-cue {
+            border-left: 3px solid var(--mint);
+        }
+
+        .booked-cue {
+            border: 1px solid var(--slate);
+        }
+
+        .nav-glass {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        @media (hover: hover) {
+            .hover-lift:hover {
+                transform: translateY(-2px);
+                transition: transform 0.2s ease;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--sage);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--mint);
+            border-radius: 10px;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "recharts": "https://esm.sh/recharts@^3.7.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.39.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+  }
+}
+</script>
+</head>
+<body>
+    <!-- Persistent Shadow Logo -->
+    <div class="shadow-watermark">
+        <svg viewBox="0 0 100 100" fill="currentColor">
+            <path d="M25 10H55C75 10 85 22 85 38C85 48 80 56 70 60C82 65 88 75 88 90C88 108 75 118 55 118H25V10ZM40 25V55H55C62 55 68 50 68 40C68 30 62 25 55 25H40ZM40 70V103H55C65 103 70 98 70 86C70 74 65 70 55 70H40Z" />
+        </svg>
+    </div>
+    <div id="root"></div>
+</body>
+</html>
