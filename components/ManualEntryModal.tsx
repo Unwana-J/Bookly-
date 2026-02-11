@@ -162,7 +162,7 @@ const ManualEntryModal: React.FC<ManualEntryModalProps> = ({ isOpen, onClose, in
                 className={`p-3 rounded-2xl border flex items-center gap-3 transition-all ${formData.paymentMethod === 'Cash/Transfer' ? 'bg-[#0F172A] border-[#0F172A] text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
               >
                 <Banknote size={16} />
-                <span className="text-[10px] font-black uppercase">Direct</span>
+                <span className="text-[10px] font-black uppercase">External Account</span>
               </button>
               <button
                 type="button"
@@ -170,7 +170,7 @@ const ManualEntryModal: React.FC<ManualEntryModalProps> = ({ isOpen, onClose, in
                 className={`p-3 rounded-2xl border flex items-center gap-3 transition-all ${formData.paymentMethod === 'Bookly Wallet' ? 'bg-[#2DD4BF] border-[#2DD4BF] text-[#0F172A]' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
               >
                 <Wallet size={16} />
-                <span className="text-[10px] font-black uppercase text-left">Wallet (2.5%)</span>
+                <span className="text-[10px] font-black uppercase text-left">Bookly Account</span>
               </button>
             </div>
           </div>
