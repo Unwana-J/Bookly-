@@ -137,8 +137,7 @@ async function runTests() {
       } else if (result.intent === 'expense') {
         console.log(`   💸 Amount: ${result.amount}`);
         console.log(`   📂 Category: ${result.category}`);
-      } else if (result.intent === 'inquiry') {
-        console.log(`   ❓ Suggested Actions: ${result.suggestedActions?.join(', ') || 'None'}`);
+      // Removed 'inquiry' intent case as it is not supported by ExtractedSale type
       }
 
       console.log();

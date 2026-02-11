@@ -201,8 +201,7 @@ function runMockTests() {
       console.log(`   📂 Category: ${expenseResult.category}`);
       console.log(`   📝 Description: ${expenseResult.description}`);
     } else if (result.intent === 'inquiry') {
-      const inquiryResult = result as any;
-      console.log(`   ❓ Suggested Actions: ${inquiryResult.suggestedActions?.join(', ') || 'None'}`);
+      // Removed 'inquiry' intent case as it is not supported by ExtractedSale type
     }
 
     if (intentMatch) {
