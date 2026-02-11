@@ -103,6 +103,7 @@ export interface ExtractedSale {
   deliveryFee?: number;
   platform?: SalesSource;
   confidence: 'high' | 'medium' | 'low';
+  customers?: any[]; // For batch support
 
   // Flat fields for compatibility with UI components
   customerHandle?: string;

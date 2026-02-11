@@ -27,8 +27,15 @@ export const OrderReviewForm: React.FC<OrderReviewFormProps> = ({
     const updateItem = (index: number, field: keyof OrderItem, value: any) => {
         const updatedItems = [...(extractedSale.orderItems || [])];
         updatedItems[index] = { ...updatedItems[index], [field]: value };
-        updateField('orderItems', updatedItems);
-        recalculateTotal(updatedItems);
+
+        const subtotal = updatedItems.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+        const total = subtotal + (extractedSale.deliveryFee || 0);
+
+        onChange({
+            ...extractedSale,
+            orderItems: updatedItems,
+            total
+        });
     };
 
     const addItem = () => {
@@ -38,19 +45,30 @@ export const OrderReviewForm: React.FC<OrderReviewFormProps> = ({
             unitPrice: 0
         };
         const updatedItems = [...(extractedSale.orderItems || []), newItem];
-        updateField('orderItems', updatedItems);
+        onChange({ ...extractedSale, orderItems: updatedItems });
     };
 
     const removeItem = (index: number) => {
         const updatedItems = extractedSale.orderItems.filter((_, i) => i !== index);
-        updateField('orderItems', updatedItems);
-        recalculateTotal(updatedItems);
+        const subtotal = updatedItems.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+        const total = subtotal + (extractedSale.deliveryFee || 0);
+
+        onChange({
+            ...extractedSale,
+            orderItems: updatedItems,
+            total
+        });
     };
 
-    const recalculateTotal = (items: OrderItem[]) => {
-        const subtotal = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
-        const total = subtotal + (extractedSale.deliveryFee || 0);
-        updateField('total', total);
+    const updateDeliveryFee = (fee: number) => {
+        const subtotal = (extractedSale.orderItems || []).reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+        const total = subtotal + fee;
+
+        onChange({
+            ...extractedSale,
+            deliveryFee: fee,
+            total
+        });
     };
 
     const validate = (): boolean => {
@@ -186,8 +204,7 @@ export const OrderReviewForm: React.FC<OrderReviewFormProps> = ({
                         value={extractedSale.deliveryFee || 0}
                         onChange={e => {
                             const fee = parseFloat(e.target.value) || 0;
-                            updateField('deliveryFee', fee);
-                            recalculateTotal(extractedSale.orderItems || []);
+                            updateDeliveryFee(fee);
                         }}
                         className="w-full h-12 bg-white border border-slate-200 rounded-xl px-4 outline-none focus:border-[#2DD4BF] transition-all font-mono font-bold text-[#0F172A]"
                     />

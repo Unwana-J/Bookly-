@@ -45,7 +45,8 @@ RECORD TYPE CLASSIFICATION:
 - For other intents: recordType is optional
 
 INSTRUCTIONS:
-- Match products to this list: ${inventoryList}.
+- Match products to this list if possible: ${inventoryList}.
+- If a product isn't on the list, still extract it as a new item.
 - If "inquiry" is detected, provide "suggestedActions" (e.g., "Send Account Details", "Calculate Shipping").
 - Look for delivery or shipping fees in sales dialogue and extract into "deliveryFee".
 - "confidence": "high", "medium", or "low".
@@ -63,7 +64,7 @@ INSTRUCTIONS:
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: { parts },
       config: {
         responseMimeType: "application/json",
@@ -125,6 +126,18 @@ INSTRUCTIONS:
         ...c,
         orderTotal: c.orderTotal || c.items?.reduce((acc: number, item: any) => acc + ((item.unitPrice || 0) * (item.quantity || 1)), 0) || 0
       }));
+
+      // Flatten for single customer cases to support simpler UI components
+      if (json.customers.length === 1) {
+        const first = json.customers[0];
+        json.customerName = first.handle || 'Customer';
+        json.customerHandle = first.handle;
+        json.orderItems = first.items || [];
+        json.items = json.orderItems; // Compatibility
+        json.total = first.orderTotal;
+        json.deliveryFee = first.deliveryFee || 0;
+        json.platform = first.platform || 'WhatsApp';
+      }
     }
 
     return json;
