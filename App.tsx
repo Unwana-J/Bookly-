@@ -1,10 +1,10 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  ShoppingBag, 
-  Users, 
-  Settings as SettingsIcon, 
-  LayoutDashboard, 
+import {
+  ShoppingBag,
+  Users,
+  Settings as SettingsIcon,
+  LayoutDashboard,
   Sparkles,
   Wallet,
   History,
@@ -84,7 +84,7 @@ const App: React.FC = () => {
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter(t => {
-      if (t.isArchived) return false; 
+      if (t.isArchived) return false;
       if (filters.platforms.length > 0 && !filters.platforms.includes(t.source)) return false;
       if (filters.status.length > 0 && !filters.status.includes(t.status)) return false;
       if (filters.productNames.length > 0 && !filters.productNames.includes(t.productName)) return false;
@@ -102,11 +102,11 @@ const App: React.FC = () => {
       const paymentMethod = customer.paymentMethod || 'Cash/Transfer';
       const deliveryFee = customer.deliveryFee || 0;
       const feePercent = paymentMethod === 'Bookly Wallet' ? 0.025 : 0;
-      
+
       customer.items?.forEach(item => {
         const product = products.find(p => p.name.toLowerCase().includes(item.productName.toLowerCase())) || products[0] || { id: 'temp', price: 0, costPrice: 0, name: item.productName };
         const qty = item.quantity || 1;
-        
+
         const basePrice = typeof item.unitPrice === 'number' ? item.unitPrice : product.price;
         const subtotal = basePrice * qty;
         const fee = subtotal * feePercent;
@@ -120,9 +120,9 @@ const App: React.FC = () => {
           deliveryFee: newTransactions.length === 0 ? deliveryFee : 0,
           timestamp, status: 'confirmed', source, paymentMethod, fee, isArchived: false, editHistory: []
         };
-        
+
         newTransactions.push(newT);
-        
+
         if (product.id !== 'temp') {
           setProducts(prev => prev.map(p => p.id === product.id ? { ...p, stock: Math.max(0, p.stock - qty), totalSales: p.totalSales + qty } : p));
         }
@@ -150,7 +150,7 @@ const App: React.FC = () => {
 
   const handleUpdateTransactionStatus = (id: string, status: TransactionStatus) => {
     setTransactions(prev => prev.map(t => t.id === id ? { ...t, status } : t));
-    notify("Ledger Updated", `Transaction ${id.substr(0,4)} marked as ${status}`, "success");
+    notify("Ledger Updated", `Transaction ${id.substr(0, 4)} marked as ${status}`, "success");
   };
 
   const handleUpdateStock = (newProducts: Product[]) => {
@@ -159,9 +159,9 @@ const App: React.FC = () => {
   };
 
   if (view === 'onboarding') {
-    return <Onboarding onComplete={(profile) => { 
-      setBusinessProfile({...profile, notificationsEnabled: true}); 
-      setView('dashboard'); 
+    return <Onboarding onComplete={(profile) => {
+      setBusinessProfile({ ...profile, notificationsEnabled: true });
+      setView('dashboard');
     }} />;
   }
 
@@ -169,19 +169,19 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F0FDF4] text-[#0F172A] font-sans flex flex-col md:flex-row">
-      
+
       {/* Toast Notifications */}
       <div className="fixed top-6 right-6 z-[1000] flex flex-col gap-3 pointer-events-none">
         {notifications.map(note => (
           <div key={note.id} className="pointer-events-auto bg-[#0f0f0f] border border-white/10 p-4 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[280px] animate-in slide-in-from-right duration-300">
-             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${note.type === 'success' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-blue-500/20 text-blue-400'}`}>
-                {note.type === 'success' ? <Check size={20} /> : <Bell size={20} />}
-             </div>
-             <div>
-                <p className="text-xs font-black text-white">{note.title}</p>
-                <p className="text-[10px] text-slate-400">{note.message}</p>
-             </div>
-             <button onClick={() => setNotifications(prev => prev.filter(n => n.id !== note.id))} className="ml-auto p-1 text-slate-600 hover:text-white"><X size={14} /></button>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${note.type === 'success' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-blue-500/20 text-blue-400'}`}>
+              {note.type === 'success' ? <Check size={20} /> : <Bell size={20} />}
+            </div>
+            <div>
+              <p className="text-xs font-black text-white">{note.title}</p>
+              <p className="text-[10px] text-slate-400">{note.message}</p>
+            </div>
+            <button onClick={() => setNotifications(prev => prev.filter(n => n.id !== note.id))} className="ml-auto p-1 text-slate-600 hover:text-white"><X size={14} /></button>
           </div>
         ))}
       </div>
@@ -195,10 +195,10 @@ const App: React.FC = () => {
         <NavItem active={view === 'inventory'} icon={<ShoppingBag size={24} />} onClick={() => setView('inventory')} label="Stock" />
         <NavItem active={view === 'crm'} icon={<Users size={24} />} onClick={() => setView('crm')} label="CRM" />
         <NavItem active={view === 'settings'} icon={<SettingsIcon size={24} />} onClick={() => setView('settings')} label="Setup" />
-        
+
         <div className="mt-auto space-y-4">
-          <button 
-            onClick={() => setIsHoverBotActive(!isHoverBotActive)} 
+          <button
+            onClick={() => setIsHoverBotActive(!isHoverBotActive)}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isHoverBotActive ? 'bg-[#2DD4BF] text-[#0F172A]' : 'bg-white/10 text-slate-200 hover:bg-white/20'}`}
           >
             <Sparkles size={24} />
@@ -212,7 +212,7 @@ const App: React.FC = () => {
         <MobileNavItem active={view === 'dashboard'} icon={<LayoutDashboard size={24} />} onClick={() => setView('dashboard')} />
         <MobileNavItem active={view === 'ledger'} icon={<BookText size={24} />} onClick={() => setView('ledger')} />
         <div className="relative -top-6">
-          <button 
+          <button
             onClick={() => setIsHoverBotActive(!isHoverBotActive)}
             className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl transition-all ${isHoverBotActive ? 'bg-[#2DD4BF] text-[#0F172A]' : 'bg-white text-[#0F172A]'}`}
           >
@@ -239,7 +239,7 @@ const App: React.FC = () => {
             onEdit={setEditingTransaction}
             currency={currency}
             onStatusChange={handleUpdateTransactionStatus}
-            onAddExpense={(e) => setExpenses(prev => [{...e, id: Math.random().toString()}, ...prev])}
+            onAddExpense={(e) => setExpenses(prev => [{ ...e, id: Math.random().toString() }, ...prev])}
             businessProfile={businessProfile}
           />
         )}
@@ -248,12 +248,12 @@ const App: React.FC = () => {
         {view === 'settings' && <Settings businessProfile={businessProfile} setBusinessProfile={setBusinessProfile} />}
       </main>
 
-      <HoverBot inventory={products} onConfirmSale={(s) => setPendingSale(s)} onConfirmProduct={(p) => handleUpdateStock([...products, {...p, id: Math.random().toString(), totalSales: 0}])} onConfirmExpense={(e) => setExpenses(prev => [{...e, id: Math.random().toString(), timestamp: new Date().toISOString()}, ...prev])} isActive={isHoverBotActive} setIsActive={setIsHoverBotActive} businessProfile={businessProfile} customers={customers} />
-      <AddProductModal isOpen={isAddProductModalOpen} onClose={() => setIsAddProductModalOpen(false)} onAdd={(p) => handleUpdateStock([...products, {...p, id: Math.random().toString(), totalSales: 0}])} />
-      <AddCustomerModal isOpen={isAddCustomerModalOpen} onClose={() => setIsAddCustomerModalOpen(false)} onAdd={(c) => setCustomers(prev => [{...c, id: Math.random().toString(), orderCount: 0, ltv: 0, lastActive: 'New'}, ...prev])} />
+      <HoverBot inventory={products} onConfirmSale={(s) => setPendingSale(s)} onConfirmProduct={(p) => handleUpdateStock([...products, { ...p, id: Math.random().toString(), totalSales: 0 }])} onConfirmExpense={(e) => setExpenses(prev => [{ ...e, id: Math.random().toString(), timestamp: new Date().toISOString() }, ...prev])} isActive={isHoverBotActive} setIsActive={setIsHoverBotActive} businessProfile={businessProfile} customers={customers} />
+      <AddProductModal isOpen={isAddProductModalOpen} onClose={() => setIsAddProductModalOpen(false)} onAdd={(p) => handleUpdateStock([...products, { ...p, id: Math.random().toString(), totalSales: 0 }])} />
+      <AddCustomerModal isOpen={isAddCustomerModalOpen} onClose={() => setIsAddCustomerModalOpen(false)} onAdd={(c) => setCustomers(prev => [{ ...c, id: Math.random().toString(), orderCount: 0, ltv: 0, lastActive: 'New' }, ...prev])} />
       <ManualEntryModal isOpen={isManualSaleModalOpen} onClose={() => setIsManualSaleModalOpen(false)} inventory={products} onConfirm={(s) => setPendingSale(s)} businessProfile={businessProfile} customers={customers} />
       <InvoiceModal isOpen={!!viewingTransaction} onClose={() => setViewingTransaction(null)} transaction={viewingTransaction} businessProfile={businessProfile} customer={customers.find(c => c.handle === viewingTransaction?.customerHandle) || null} />
-      {editingTransaction && <EditTransactionModal isOpen={!!editingTransaction} onClose={() => setEditingTransaction(null)} transaction={editingTransaction} onUpdate={(id, updates) => setTransactions(prev => prev.map(t => t.id === id ? {...t, ...updates} : t))} />}
+      {editingTransaction && <EditTransactionModal isOpen={!!editingTransaction} onClose={() => setEditingTransaction(null)} transaction={editingTransaction} onUpdate={(id, updates) => setTransactions(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t))} />}
       {pendingSale && <ConfirmSaleModal isOpen={!!pendingSale} onClose={() => setPendingSale(null)} onConfirm={(editedData) => commitSale(editedData)} saleData={pendingSale} products={products} businessProfile={businessProfile} />}
     </div>
   );

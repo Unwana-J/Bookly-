@@ -2,7 +2,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { ExtractionResult, Product } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Lazy initialization to prevent crash on startup if key is missing
+const getAI = () => {
+  const key = process.env.API_KEY || '';
+  if (!key) {
+    console.warn("Bookly: No Gemini API Key found. AI features will be disabled.");
+  }
+  return new GoogleGenAI({ apiKey: key });
+};
 
 const cleanJsonResponse = (text: string): string => {
   let cleaned = text.trim();
@@ -19,11 +26,11 @@ const cleanJsonResponse = (text: string): string => {
 };
 
 export const analyzeIntentAndExtract = async (
-  inputs: { text?: string; imageBase64?: string }[], 
+  inputs: { text?: string; imageBase64?: string }[],
   inventory: Product[]
 ): Promise<ExtractionResult | null> => {
   const inventoryList = inventory.map(p => `"${p.name}" (Price:${p.price}, Stock:${p.stock})`).join(", ");
-  
+
   const systemInstruction = `You are the Bookly AI Engine. Analyze business inputs and return structured JSON.
 
 INTENT CATEGORIES:
@@ -49,6 +56,7 @@ INSTRUCTIONS:
   });
 
   try {
+    const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: { parts },
@@ -103,14 +111,14 @@ INSTRUCTIONS:
     const text = response.text;
     if (!text) return null;
     const json = JSON.parse(cleanJsonResponse(text));
-    
+
     if (json.intent === 'sale' && json.customers) {
       json.customers = json.customers.map((c: any) => ({
         ...c,
         orderTotal: c.orderTotal || c.items?.reduce((acc: number, item: any) => acc + ((item.unitPrice || 0) * (item.quantity || 1)), 0) || 0
       }));
     }
-    
+
     return json;
   } catch (e) {
     console.error("Extraction Failed:", e);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --navy: #0F172A;
@@ -18,7 +21,8 @@
             --text-on-dark: #CBD5E1;
         }
 
-        html, body {
+        html,
+        body {
             height: auto;
             min-height: 100%;
             margin: 0;
@@ -60,7 +64,10 @@
         }
 
         /* 8px Grid Helpers */
-        .spacing-8 { padding: 2rem; }
+        .spacing-8 {
+            padding: 2rem;
+        }
+
         .card-shadow {
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
         }
@@ -95,34 +102,29 @@
         ::-webkit-scrollbar {
             width: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: var(--sage);
         }
+
         ::-webkit-scrollbar-thumb {
             background: var(--mint);
             border-radius: 10px;
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "recharts": "https://esm.sh/recharts@^3.7.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.39.0",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
-  }
-}
-</script>
+
 </head>
+
 <body>
     <!-- Persistent Shadow Logo -->
     <div class="shadow-watermark">
         <svg viewBox="0 0 100 100" fill="currentColor">
-            <path d="M25 10H55C75 10 85 22 85 38C85 48 80 56 70 60C82 65 88 75 88 90C88 108 75 118 55 118H25V10ZM40 25V55H55C62 55 68 50 68 40C68 30 62 25 55 25H40ZM40 70V103H55C65 103 70 98 70 86C70 74 65 70 55 70H40Z" />
+            <path
+                d="M25 10H55C75 10 85 22 85 38C85 48 80 56 70 60C82 65 88 75 88 90C88 108 75 118 55 118H25V10ZM40 25V55H55C62 55 68 50 68 40C68 30 62 25 55 25H40ZM40 70V103H55C65 103 70 98 70 86C70 74 65 70 55 70H40Z" />
         </svg>
     </div>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>
