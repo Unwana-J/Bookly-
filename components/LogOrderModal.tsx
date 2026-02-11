@@ -64,7 +64,7 @@ const LogOrderModal: React.FC<LogOrderModalProps> = ({ open, onClose, products, 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       <div className="bg-white rounded-2xl p-8 w-full max-w-lg shadow-xl relative max-h-[85vh] overflow-y-auto">
         <button className="absolute top-4 right-4 text-gray-400 hover:text-gray-700" onClick={onClose}>&times;</button>
-        <h2 className="text-xl font-bold mb-4">Log Order</h2>
+        <h2 className="text-xl font-bold mb-4">Add New Order</h2>
         <form className="space-y-4" onSubmit={e => { e.preventDefault(); handleSave(); }}>
           {/* Payment Status Toggle */}
           <div className="flex items-center gap-4">

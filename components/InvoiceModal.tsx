@@ -52,7 +52,7 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, onClose, transactio
   };
 
   return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
       <div className="w-full max-w-2xl h-full max-h-[90vh] flex flex-col bg-white text-black rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95">
 
         {/* Header Actions */}
