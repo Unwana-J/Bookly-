@@ -37,13 +37,12 @@ interface SettingsProps {
   setBusinessProfile: (profile: BusinessProfile) => void;
 }
 
-type EditSection = 'profile' | 'branding' | 'financials' | 'notifications' | 'security' | 'platforms' | 'widgets' | 'none';
+type EditSection = 'profile' | 'branding' | 'financials' | 'notifications' | 'security' | 'platforms' | 'widgets' | 'overlay' | 'none';
 
 const SOURCES: SalesSource[] = ['WhatsApp', 'Instagram', 'Facebook', 'Walk-in', 'Phone Call', 'Other'];
 
 const Settings: React.FC<SettingsProps> = ({ businessProfile, setBusinessProfile }) => {
   const [activeEdit, setActiveEdit] = useState<EditSection>('none');
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!businessProfile) return null;
 
@@ -54,32 +53,6 @@ const Settings: React.FC<SettingsProps> = ({ businessProfile, setBusinessProfile
     });
   };
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Check file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File size must be less than 5MB');
-      return;
-    }
-
-    // Check file type
-    if (!file.type.startsWith('image/')) {
-      alert('Please upload an image file');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64String = event.target?.result as string;
-      setBusinessProfile({
-        ...businessProfile,
-        logo: base64String
-      });
-    };
-    reader.readAsDataURL(file);
-  };
 
   const toggleNotifications = () => {
     setBusinessProfile({
@@ -210,6 +183,7 @@ const Settings: React.FC<SettingsProps> = ({ businessProfile, setBusinessProfile
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${businessProfile.notificationsEnabled ? 'right-1' : 'left-1'}`} />
               </button>
             </div>
+            <SettingsItem icon={<Smartphone size={20} />} label="Social App Overlay" sub="Manage floating icon visibility on social apps" onClick={() => setActiveEdit('overlay')} />
             <SettingsItem icon={<Lock size={20} />} label="Storage Mode" sub={businessProfile.persistenceMode === 'cloud' ? 'Cloud Sync Enabled' : 'Local Device Only'} onClick={() => setActiveEdit('security')} />
             <div className="p-5">
               <div className="flex items-center gap-3 mb-2">
@@ -278,6 +252,34 @@ const SettingsModal: React.FC<{
   onSave: (updates: Partial<BusinessProfile>) => void;
 }> = ({ isOpen, section, onClose, profile, onSave }) => {
   const [formData, setFormData] = useState<Partial<BusinessProfile>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64String = event.target?.result as string;
+      setFormData(prev => ({
+        ...prev,
+        logo: base64String
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Reset form when section changes
   React.useEffect(() => {
@@ -299,6 +301,7 @@ const SettingsModal: React.FC<{
       case 'branding': return 'Brand Customization';
       case 'financials': return 'Financial Settings';
       case 'security': return 'Data Security';
+      case 'overlay': return 'Social App Overlay';
       default: return 'Settings';
     }
   };
@@ -369,9 +372,9 @@ const SettingsModal: React.FC<{
                   onChange={handleLogoUpload}
                   className="hidden"
                 />
-                {profile.logo ? (
+                {formData.logo || profile.logo ? (
                   <>
-                    <img src={profile.logo} alt="Business Logo" className="w-16 h-16 mx-auto rounded-xl object-cover border border-slate-200" />
+                    <img src={formData.logo || profile.logo} alt="Business Logo" className="w-16 h-16 mx-auto rounded-xl object-cover border border-slate-200" />
                     <p className="text-xs font-bold text-slate-600">Click to change logo</p>
                   </>
                 ) : (
@@ -442,6 +445,42 @@ const SettingsModal: React.FC<{
             </div>
           )}
 
+          {section === 'overlay' && (
+            <div className="space-y-4">
+              <p className="text-sm text-slate-500 mb-4">
+                Select the social media apps where you want the Bookly AI floating icon to appear.
+                When deactivated, the overlay will be hidden for that specific app.
+              </p>
+
+              {[
+                { key: 'instagram', label: 'Instagram' },
+                { key: 'whatsapp', label: 'WhatsApp' },
+                { key: 'tiktok', label: 'TikTok' },
+                { key: 'twitter', label: '(X) Twitter' }
+              ].map((app) => (
+                <div key={app.key} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                  <span className="font-bold text-[#0F172A]">{app.label}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const currentOverlay = formData.socialOverlay || profile.socialOverlay || { instagram: true, whatsapp: true, tiktok: true, twitter: true };
+                      setFormData({
+                        ...formData,
+                        socialOverlay: {
+                          ...currentOverlay,
+                          [app.key]: !currentOverlay[app.key as keyof typeof currentOverlay]
+                        }
+                      });
+                    }}
+                    className={`w-12 h-6 rounded-full relative transition-colors ${(formData.socialOverlay || profile.socialOverlay || { instagram: true, whatsapp: true, tiktok: true, twitter: true })[app.key as keyof typeof formData.socialOverlay] ? 'bg-[#2DD4BF]' : 'bg-gray-200'}`}
+                  >
+                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${(formData.socialOverlay || profile.socialOverlay || { instagram: true, whatsapp: true, tiktok: true, twitter: true })[app.key as keyof typeof formData.socialOverlay] ? 'right-1' : 'left-1'}`} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           <button
             type="submit"
             className="w-full h-16 bg-[#2DD4BF] text-[#0F172A] font-black rounded-3xl flex items-center justify-center space-x-2 mt-2 hover:shadow-lg hover:bg-[#20c9e6] active:scale-95 transition-all"
@@ -450,7 +489,7 @@ const SettingsModal: React.FC<{
             <span>Save Changes</span>
           </button>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };

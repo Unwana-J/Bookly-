@@ -93,7 +93,14 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       topPerformer: true,
       quickActions: true,
       inventoryHealth: true,
+      inventoryHealth: true,
       channels: true
+    },
+    socialOverlay: {
+      instagram: true,
+      whatsapp: true,
+      tiktok: true,
+      twitter: true
     }
   });
 
@@ -518,8 +525,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             key={platform.id}
             onClick={() => togglePlatform(platform.id)}
             className={`w-full h-16 px-6 rounded-3xl border flex items-center justify-between transition-all ${profile.activePlatforms.includes(platform.id)
-                ? 'bg-[#2DD4BF]/10 border-[#2DD4BF] text-[#0F172A]'
-                : 'bg-white border-gray-100 text-[#64748B] hover:border-[#2DD4BF]/50'
+              ? 'bg-[#2DD4BF]/10 border-[#2DD4BF] text-[#0F172A]'
+              : 'bg-white border-gray-100 text-[#64748B] hover:border-[#2DD4BF]/50'
               }`}
           >
             <div className="flex items-center gap-4">

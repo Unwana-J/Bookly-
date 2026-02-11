@@ -279,62 +279,39 @@ const App: React.FC = () => {
               {note.type === 'success' ? <Check size={20} /> : <Bell size={20} />}
             </div>
             <div>
-              <SalesView
-                transactions={transactions}
-                filters={filters}
-                setFilters={setFilters}
-                products={products}
-                customers={customers}
-                vipThreshold={businessProfile?.vipThreshold || 5}
-                onViewInvoice={setViewingTransaction}
-                onArchive={(id) => setTransactions(prev => prev.map(t => t.id === id ? { ...t, isArchived: !t.isArchived } : t))}
-                onEdit={setEditingTransaction}
-                currency={currency}
-                onStatusChange={handleUpdateTransactionStatus}
-                onAddOrder={order => {
-                  const id = 'order_' + Math.random().toString(36).substr(2, 9);
-                  const now = new Date().toISOString();
-                  const transaction = {
-                    id,
-                    customerId: '',
-                    customerHandle: order.customerName || '',
-                    productId: '',
-                    productName: order.product,
-                    quantity: order.quantity,
-                    total: order.total,
-                    costTotal: 0,
-                    deliveryFee: 0,
-                    timestamp: now,
-                    status: order.isPaid ? 'paid' : 'unpaid',
-                    source: 'Other',
-                    paymentMethod: order.isPaid ? 'Cash/Transfer' : 'Bookly Wallet',
-                    editHistory: [],
-                    items: [{ productName: order.product, quantity: order.quantity, unitPrice: order.unitPrice }],
-                  };
-                  setTransactions(prev => [transaction, ...prev]);
-                  // Auto-generate document
-                  if (order.isPaid) {
-                    setViewingTransaction(transaction); // Receipt
-                  } else {
-                    setViewingTransaction(transaction); // Invoice
-                  }
-                }}
-              />
-        <NavItem active={view === 'finance'} icon={<TrendingUp size={24} />} onClick={() => setView('finance')} label="Finance" />
-        <NavItem active={view === 'assets'} icon={<ShoppingBag size={24} />} onClick={() => setView('assets')} label="Assets" />
-        <NavItem active={view === 'orders'} icon={<Package size={24} />} onClick={() => setView('orders')} label="Orders" />
-        <NavItem active={view === 'settings'} icon={<SettingsIcon size={24} />} onClick={() => setView('settings')} label="Setup" />
+              <h4 className="font-bold text-sm text-white">{note.title}</h4>
+              <p className="text-xs text-slate-400">{note.message}</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
-        <div className="mt-auto space-y-4">
-          <button
-            onClick={() => setIsHoverBotActive(!isHoverBotActive)}
-            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isHoverBotActive ? 'bg-[#2DD4BF] text-[#0F172A]' : 'bg-white/10 text-slate-200 hover:bg-white/20'}`}
-          >
-            <Sparkles size={24} />
-          </button>
-          <button onClick={handleLogout} className="w-12 h-12 rounded-xl flex items-center justify-center text-red-300 hover:bg-red-500/20 transition-all"><LogOut size={24} /></button>
-		</div>
-	</nav>
+      {/* Sidebar Navigation */}
+      <nav className="hidden md:flex flex-col w-24 lg:w-32 fixed left-0 top-0 bottom-0 bg-[#0F172A] border-r border-white/10 items-center py-8 z-[50]">
+        <div className="mb-12">
+          <div className="w-12 h-12 bg-[#2DD4BF] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(45,212,191,0.3)]">
+            <span className="text-[#0F172A] font-black text-xl">B.</span>
+          </div>
+        </div>
+
+        <div className="space-y-4 w-full px-4 flex flex-col items-center">
+          <NavItem active={view === 'dashboard'} icon={<LayoutDashboard size={24} />} onClick={() => setView('dashboard')} label="Overview" />
+          <NavItem active={view === 'finance'} icon={<TrendingUp size={24} />} onClick={() => setView('finance')} label="Finance" />
+          <NavItem active={view === 'assets'} icon={<ShoppingBag size={24} />} onClick={() => setView('assets')} label="Assets" />
+          <NavItem active={view === 'orders'} icon={<Package size={24} />} onClick={() => setView('orders')} label="Orders" />
+          <NavItem active={view === 'settings'} icon={<SettingsIcon size={24} />} onClick={() => setView('settings')} label="Setup" />
+
+          <div className="mt-auto space-y-4">
+            <button
+              onClick={() => setIsHoverBotActive(!isHoverBotActive)}
+              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isHoverBotActive ? 'bg-[#2DD4BF] text-[#0F172A]' : 'bg-white/10 text-slate-200 hover:bg-white/20'}`}
+            >
+              <Sparkles size={24} />
+            </button>
+            <button onClick={handleLogout} className="w-12 h-12 rounded-xl flex items-center justify-center text-red-300 hover:bg-red-500/20 transition-all"><LogOut size={24} /></button>
+          </div>
+        </div>
+      </nav>
 
       {/* Mobile Tab Bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#0F172A] border-t border-white/10 flex items-center justify-around px-6 z-[200]">

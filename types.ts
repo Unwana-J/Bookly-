@@ -23,6 +23,13 @@ export type SalesSource = 'WhatsApp' | 'Instagram' | 'Facebook' | 'Walk-in' | 'P
 export type PaymentMethod = 'Bookly Wallet' | 'Cash/Transfer';
 export type TransactionStatus = 'paid' | 'unpaid' | 'confirmed' | 'cancelled';
 
+export interface SocialOverlayConfig {
+  instagram: boolean;
+  whatsapp: boolean;
+  tiktok: boolean;
+  twitter: boolean;
+}
+
 export interface Customer {
   id: string;
   handle: string;
@@ -196,6 +203,7 @@ export interface BusinessProfile {
   activePlatforms: SalesSource[];
   consentTimestamp?: string;
   dashboardWidgets: DashboardWidgets;
+  socialOverlay: SocialOverlayConfig;
   wallet?: WalletProfile; // Linked wallet
 }
 

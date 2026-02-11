@@ -28,6 +28,7 @@ import {
   Check
 } from 'lucide-react';
 import GlobalFilterBar from './GlobalFilterBar';
+import LogOrderModal from './LogOrderModal';
 
 interface SalesViewProps {
   transactions: Transaction[];
@@ -41,6 +42,7 @@ interface SalesViewProps {
   onEdit: (transaction: Transaction) => void;
   currency: string;
   onStatusChange: (id: string, status: TransactionStatus) => void;
+  onAddOrder?: (order: any) => void;
 }
 
 const SalesView: React.FC<SalesViewProps> = ({
@@ -54,10 +56,11 @@ const SalesView: React.FC<SalesViewProps> = ({
   onArchive,
   onEdit,
   currency,
-  onStatusChange
+  onStatusChange,
+  onAddOrder
 }) => {
   const [showArchived, setShowArchived] = useState(false);
-   const [showLogOrder, setShowLogOrder] = useState(false);
+  const [showLogOrder, setShowLogOrder] = useState(false);
 
   const displayedTransactions = transactions.filter(t => t.isArchived === showArchived);
 
@@ -115,40 +118,20 @@ const SalesView: React.FC<SalesViewProps> = ({
         </div>
       </header>
 
+      {/* Log Order Modal */}
+      <LogOrderModal
+        open={showLogOrder}
+        onClose={() => setShowLogOrder(false)}
+        products={products}
+        customers={customers}
+        onSubmit={order => {
+          if (typeof onAddOrder === 'function') {
+            onAddOrder(order);
+          }
+        }}
+      />
+
       {/* Summary Cards */}
-            {/* Log Order Modal */}
-            <LogOrderModal
-              open={showLogOrder}
-              onClose={() => setShowLogOrder(false)}
-              products={products}
-              customers={customers}
-              onSubmit={order => {
-                if (typeof onAddOrder === 'function') {
-                  onAddOrder(order);
-                }
-              }}
-            />
-  onAddOrder?: (order: any) => void;
-}
-
-const SalesView: React.FC<SalesViewProps> = ({
-  transactions,
-  filters,
-  setFilters,
-  products,
-  customers,
-  vipThreshold,
-  onViewInvoice,
-  onArchive,
-  onEdit,
-  currency,
-  onStatusChange,
-  onAddOrder
-}) => {
-
-            {/* Summary Cards */}
-      import GlobalFilterBar from './GlobalFilterBar';
-      import LogOrderModal from './LogOrderModal';
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="cyber-border p-6 rounded-[32px] space-y-1 bg-white">
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Filtered Volume</p>
