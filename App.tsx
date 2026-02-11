@@ -444,7 +444,7 @@ const App: React.FC = () => {
         )}
         {pendingSale && <ConfirmSaleModal isOpen={!!pendingSale} onClose={() => setPendingSale(null)} onConfirm={(editedData) => commitSale(editedData)} saleData={pendingSale} products={products} businessProfile={businessProfile} />}
       </>
-    </div>
+    </>
   );
 };
 
