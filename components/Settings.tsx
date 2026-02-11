@@ -1,11 +1,11 @@
 
 import React, { useState, useRef } from 'react';
-import { 
-  CreditCard, 
-  Globe, 
-  Smartphone, 
-  Bell, 
-  Shield, 
+import {
+  CreditCard,
+  Globe,
+  Smartphone,
+  Bell,
+  Shield,
   Palette,
   ChevronRight,
   Store,
@@ -60,6 +60,14 @@ const Settings: React.FC<SettingsProps> = ({ businessProfile, setBusinessProfile
     });
   };
 
+  const handleSave = (updates: Partial<BusinessProfile>) => {
+    setBusinessProfile({
+      ...businessProfile,
+      ...updates
+    });
+    setActiveEdit('none');
+  };
+
   const toggleWidget = (key: keyof DashboardWidgets) => {
     setBusinessProfile({
       ...businessProfile,
@@ -88,41 +96,41 @@ const Settings: React.FC<SettingsProps> = ({ businessProfile, setBusinessProfile
           <SectionTitle title="Dashboard Layout" />
           <div className="cyber-border rounded-3xl overflow-hidden divide-y divide-[#0F172A]/5 bg-white shadow-sm p-2">
             <div className="space-y-1">
-              <WidgetToggle 
-                icon={<Eye size={18} />} 
-                label="Summary Stat Cards" 
-                active={businessProfile.dashboardWidgets?.statCards} 
-                onToggle={() => toggleWidget('statCards')} 
+              <WidgetToggle
+                icon={<Eye size={18} />}
+                label="Summary Stat Cards"
+                active={businessProfile.dashboardWidgets?.statCards}
+                onToggle={() => toggleWidget('statCards')}
               />
-              <WidgetToggle 
-                icon={<TrendingUp size={18} />} 
-                label="Revenue Trend Chart" 
-                active={businessProfile.dashboardWidgets?.revenueTrend} 
-                onToggle={() => toggleWidget('revenueTrend')} 
+              <WidgetToggle
+                icon={<TrendingUp size={18} />}
+                label="Revenue Trend Chart"
+                active={businessProfile.dashboardWidgets?.revenueTrend}
+                onToggle={() => toggleWidget('revenueTrend')}
               />
-              <WidgetToggle 
-                icon={<Trophy size={18} />} 
-                label="Top Performer Badge" 
-                active={businessProfile.dashboardWidgets?.topPerformer} 
-                onToggle={() => toggleWidget('topPerformer')} 
+              <WidgetToggle
+                icon={<Trophy size={18} />}
+                label="Top Performer Badge"
+                active={businessProfile.dashboardWidgets?.topPerformer}
+                onToggle={() => toggleWidget('topPerformer')}
               />
-              <WidgetToggle 
-                icon={<Zap size={18} />} 
-                label="Quick Action Buttons" 
-                active={businessProfile.dashboardWidgets?.quickActions} 
-                onToggle={() => toggleWidget('quickActions')} 
+              <WidgetToggle
+                icon={<Zap size={18} />}
+                label="Quick Action Buttons"
+                active={businessProfile.dashboardWidgets?.quickActions}
+                onToggle={() => toggleWidget('quickActions')}
               />
-              <WidgetToggle 
-                icon={<Package size={18} />} 
-                label="Inventory Health Status" 
-                active={businessProfile.dashboardWidgets?.inventoryHealth} 
-                onToggle={() => toggleWidget('inventoryHealth')} 
+              <WidgetToggle
+                icon={<Package size={18} />}
+                label="Inventory Health Status"
+                active={businessProfile.dashboardWidgets?.inventoryHealth}
+                onToggle={() => toggleWidget('inventoryHealth')}
               />
-              <WidgetToggle 
-                icon={<PieChart size={18} />} 
-                label="Channel Split Pie Chart" 
-                active={businessProfile.dashboardWidgets?.channels} 
-                onToggle={() => toggleWidget('channels')} 
+              <WidgetToggle
+                icon={<PieChart size={18} />}
+                label="Channel Split Pie Chart"
+                active={businessProfile.dashboardWidgets?.channels}
+                onToggle={() => toggleWidget('channels')}
               />
             </div>
           </div>
@@ -140,7 +148,7 @@ const Settings: React.FC<SettingsProps> = ({ businessProfile, setBusinessProfile
                   <p className="text-xs text-gray-500">For unsourced orders</p>
                 </div>
               </div>
-              <select 
+              <select
                 value={businessProfile.defaultSalesSource || 'Other'}
                 onChange={handleSourceChange}
                 className="bg-white border border-[#0F172A]/10 rounded-xl text-xs font-bold px-3 py-2 outline-none"
@@ -166,16 +174,25 @@ const Settings: React.FC<SettingsProps> = ({ businessProfile, setBusinessProfile
             </div>
             <SettingsItem icon={<Lock size={20} />} label="Storage Mode" sub={businessProfile.persistenceMode === 'cloud' ? 'Cloud Sync Enabled' : 'Local Device Only'} onClick={() => setActiveEdit('security')} />
             <div className="p-5">
-               <div className="flex items-center gap-3 mb-2">
-                 <Shield size={18} className="text-emerald-500" />
-                 <span className="text-[10px] font-black uppercase tracking-widest text-[#0F172A]">Compliance Shield Active</span>
-               </div>
-               <p className="text-[9px] text-gray-400 leading-relaxed italic">Last updated: {businessProfile.consentTimestamp ? new Date(businessProfile.consentTimestamp).toLocaleDateString() : 'Initial Setup'}</p>
+              <div className="flex items-center gap-3 mb-2">
+                <Shield size={18} className="text-emerald-500" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#0F172A]">Compliance Shield Active</span>
+              </div>
+              <p className="text-[9px] text-gray-400 leading-relaxed italic">Last updated: {businessProfile.consentTimestamp ? new Date(businessProfile.consentTimestamp).toLocaleDateString() : 'Initial Setup'}</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+
+      <SettingsModal
+        isOpen={activeEdit !== 'none'}
+        section={activeEdit}
+        onClose={() => setActiveEdit('none')}
+        profile={businessProfile}
+        onSave={handleSave}
+      />
+    </div >
   );
 };
 
@@ -204,8 +221,8 @@ const WidgetToggle: React.FC<{ icon: React.ReactNode, label: string, active: boo
       </div>
       <span className="text-sm font-semibold text-[#0F172A]">{label}</span>
     </div>
-    <button 
-      onClick={onToggle} 
+    <button
+      onClick={onToggle}
       className={`w-10 h-5 rounded-full relative transition-colors ${active ? 'bg-[#2DD4BF]' : 'bg-gray-200'}`}
     >
       <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${active ? 'right-0.5' : 'left-0.5'}`} />
@@ -214,3 +231,169 @@ const WidgetToggle: React.FC<{ icon: React.ReactNode, label: string, active: boo
 );
 
 export default Settings;
+
+const SettingsModal: React.FC<{
+  isOpen: boolean;
+  section: EditSection;
+  onClose: () => void;
+  profile: BusinessProfile;
+  onSave: (updates: Partial<BusinessProfile>) => void;
+}> = ({ isOpen, section, onClose, profile, onSave }) => {
+  const [formData, setFormData] = useState<Partial<BusinessProfile>>({});
+
+  // Reset form when section changes
+  React.useEffect(() => {
+    if (isOpen) {
+      setFormData({});
+    }
+  }, [isOpen, section]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  const getTitle = () => {
+    switch (section) {
+      case 'profile': return 'Edit Identity';
+      case 'branding': return 'Brand Customization';
+      case 'financials': return 'Financial Settings';
+      case 'security': return 'Data Security';
+      default: return 'Settings';
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="w-full max-w-lg bg-white border border-slate-100 rounded-[40px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+        <div className="flex items-center justify-between p-8 border-b border-slate-100 bg-slate-50/50">
+          <h2 className="text-xl font-black text-[#0F172A]">{getTitle()}</h2>
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+            <X size={20} className="text-slate-400" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto custom-scrollbar">
+          {section === 'profile' && (
+            <>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Business Name</label>
+                <input
+                  type="text"
+                  defaultValue={profile.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full h-14 bg-white border border-slate-200 rounded-2xl px-5 outline-none focus:border-[#2DD4BF] focus:ring-2 focus:ring-[#2DD4BF]/20 transition-all font-bold text-[#0F172A]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Email Address</label>
+                <input
+                  type="email"
+                  defaultValue={profile.email}
+                  onChange={e => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full h-14 bg-white border border-slate-200 rounded-2xl px-5 outline-none focus:border-[#2DD4BF] transition-all font-medium text-[#0F172A]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Phone Number</label>
+                <input
+                  type="tel"
+                  defaultValue={profile.phone}
+                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full h-14 bg-white border border-slate-200 rounded-2xl px-5 outline-none focus:border-[#2DD4BF] transition-all font-medium text-[#0F172A]"
+                />
+              </div>
+            </>
+          )}
+
+          {section === 'branding' && (
+            <>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Receipt Footer Message</label>
+                <input
+                  type="text"
+                  defaultValue={profile.receiptFooter}
+                  onChange={e => setFormData({ ...formData, receiptFooter: e.target.value })}
+                  className="w-full h-14 bg-white border border-slate-200 rounded-2xl px-5 outline-none focus:border-[#2DD4BF] transition-all font-medium text-[#0F172A]"
+                  placeholder="Thank you for your patronage!"
+                />
+              </div>
+              <div className="p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-300 text-center space-y-2">
+                <div className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center mx-auto text-slate-400">
+                  <Camera size={20} />
+                </div>
+                <p className="text-xs font-bold text-slate-600">Upload Logo</p>
+                <p className="text-[10px] text-slate-400">Recommended: 500x500px PNG</p>
+              </div>
+            </>
+          )}
+
+          {section === 'financials' && (
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Store Currency</label>
+              <select
+                defaultValue={profile.currency}
+                onChange={e => setFormData({ ...formData, currency: e.target.value })}
+                className="w-full h-14 bg-white border border-slate-200 rounded-2xl px-5 outline-none focus:border-[#2DD4BF] transition-all font-bold text-[#0F172A]"
+              >
+                <option value="NGN">NGN (Nigerian Naira)</option>
+                <option value="USD">USD (US Dollar)</option>
+                <option value="GBP">GBP (British Pound)</option>
+                <option value="EUR">EUR (Euro)</option>
+                <option value="GHS">GHS (Ghanaian Cedi)</option>
+                <option value="KES">KES (Kenyan Shilling)</option>
+                <option value="ZAR">ZAR (South African Rand)</option>
+              </select>
+            </div>
+          )}
+
+          {section === 'security' && (
+            <div className="space-y-4">
+              <div
+                onClick={() => setFormData({ ...formData, persistenceMode: 'cloud' })}
+                className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${formData.persistenceMode === 'cloud' || (!formData.persistenceMode && profile.persistenceMode === 'cloud') ? 'bg-[#2DD4BF]/10 border-[#2DD4BF]' : 'bg-white border-slate-200 hover:border-[#2DD4BF]/50'}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center">
+                    <Cloud size={20} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-[#0F172A]">Cloud Sync</p>
+                    <p className="text-xs text-slate-500">Backup data to secure server</p>
+                  </div>
+                </div>
+                {(formData.persistenceMode === 'cloud' || (!formData.persistenceMode && profile.persistenceMode === 'cloud')) && <Check size={20} className="text-[#2DD4BF]" />}
+              </div>
+
+              <div
+                onClick={() => setFormData({ ...formData, persistenceMode: 'local' })}
+                className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${formData.persistenceMode === 'local' || (!formData.persistenceMode && profile.persistenceMode === 'local') ? 'bg-[#2DD4BF]/10 border-[#2DD4BF]' : 'bg-white border-slate-200 hover:border-[#2DD4BF]/50'}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+                    <Database size={20} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-[#0F172A]">Local Device Only</p>
+                    <p className="text-xs text-slate-500">Data never leaves this browser</p>
+                  </div>
+                </div>
+                {(formData.persistenceMode === 'local' || (!formData.persistenceMode && profile.persistenceMode === 'local')) && <Check size={20} className="text-[#2DD4BF]" />}
+              </div>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="w-full h-16 bg-[#2DD4BF] text-[#0F172A] font-black rounded-3xl flex items-center justify-center space-x-2 mt-2 hover:shadow-lg hover:bg-[#20c9e6] active:scale-95 transition-all"
+          >
+            <Check size={20} />
+            <span>Save Changes</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
