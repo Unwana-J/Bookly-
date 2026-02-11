@@ -428,20 +428,22 @@ const App: React.FC = () => {
         {view === 'settings' && <Settings businessProfile={businessProfile} setBusinessProfile={setBusinessProfile} />}
       </main>
 
-      <HoverBot inventory={products} onConfirmSale={(s) => setPendingSale(s)} onConfirmProduct={(p) => handleUpdateStock([...products, { ...p, id: Math.random().toString(), totalSales: 0 }])} onConfirmExpense={(e) => setExpenses(prev => [{ ...e, id: Math.random().toString(), timestamp: new Date().toISOString() }, ...prev])} isActive={isHoverBotActive} setIsActive={setIsHoverBotActive} businessProfile={businessProfile} customers={customers} />
-      <AddProductModal isOpen={isAddProductModalOpen} onClose={() => setIsAddProductModalOpen(false)} onAdd={(p) => handleUpdateStock([...products, { ...p, id: Math.random().toString(), totalSales: 0 }])} />
-      <AddCustomerModal isOpen={isAddCustomerModalOpen} onClose={() => setIsAddCustomerModalOpen(false)} onAdd={(c) => setCustomers(prev => [{ ...c, id: Math.random().toString(), orderCount: 0, ltv: 0, lastActive: 'New' }, ...prev])} />
-      <ManualEntryModal isOpen={isManualSaleModalOpen} onClose={() => setIsManualSaleModalOpen(false)} inventory={products} onConfirm={(s) => setPendingSale(s)} businessProfile={businessProfile} customers={customers} />
-      <InvoiceModal isOpen={!!viewingTransaction} onClose={() => setViewingTransaction(null)} transaction={viewingTransaction} businessProfile={businessProfile} customer={customers.find(c => c.handle === viewingTransaction?.customerHandle) || null} />
-      {editingTransaction && <EditTransactionModal isOpen={!!editingTransaction} onClose={() => setEditingTransaction(null)} transaction={editingTransaction} onUpdate={(id, updates) => setTransactions(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t))} />}
-      {viewingTransaction && showInvoice && businessProfile && (
-        <InvoiceGenerator
-          transaction={viewingTransaction}
-          businessProfile={businessProfile}
-          onClose={() => setShowInvoice(false)}
-        />
-      )}
-      {pendingSale && <ConfirmSaleModal isOpen={!!pendingSale} onClose={() => setPendingSale(null)} onConfirm={(editedData) => commitSale(editedData)} saleData={pendingSale} products={products} businessProfile={businessProfile} />}
+      <>
+        <HoverBot inventory={products} onConfirmSale={(s) => setPendingSale(s)} onConfirmProduct={(p) => handleUpdateStock([...products, { ...p, id: Math.random().toString(), totalSales: 0 }])} onConfirmExpense={(e) => setExpenses(prev => [{ ...e, id: Math.random().toString(), timestamp: new Date().toISOString() }, ...prev])} isActive={isHoverBotActive} setIsActive={setIsHoverBotActive} businessProfile={businessProfile} customers={customers} />
+        <AddProductModal isOpen={isAddProductModalOpen} onClose={() => setIsAddProductModalOpen(false)} onAdd={(p) => handleUpdateStock([...products, { ...p, id: Math.random().toString(), totalSales: 0 }])} />
+        <AddCustomerModal isOpen={isAddCustomerModalOpen} onClose={() => setIsAddCustomerModalOpen(false)} onAdd={(c) => setCustomers(prev => [{ ...c, id: Math.random().toString(), orderCount: 0, ltv: 0, lastActive: 'New' }, ...prev])} />
+        <ManualEntryModal isOpen={isManualSaleModalOpen} onClose={() => setIsManualSaleModalOpen(false)} inventory={products} onConfirm={(s) => setPendingSale(s)} businessProfile={businessProfile} customers={customers} />
+        <InvoiceModal isOpen={!!viewingTransaction} onClose={() => setViewingTransaction(null)} transaction={viewingTransaction} businessProfile={businessProfile} customer={customers.find(c => c.handle === viewingTransaction?.customerHandle) || null} />
+        {editingTransaction && <EditTransactionModal isOpen={!!editingTransaction} onClose={() => setEditingTransaction(null)} transaction={editingTransaction} onUpdate={(id, updates) => setTransactions(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t))} />}
+        {viewingTransaction && showInvoice && businessProfile && (
+          <InvoiceGenerator
+            transaction={viewingTransaction}
+            businessProfile={businessProfile}
+            onClose={() => setShowInvoice(false)}
+          />
+        )}
+        {pendingSale && <ConfirmSaleModal isOpen={!!pendingSale} onClose={() => setPendingSale(null)} onConfirm={(editedData) => commitSale(editedData)} saleData={pendingSale} products={products} businessProfile={businessProfile} />}
+      </>
     </div>
   );
 };
