@@ -333,8 +333,8 @@ const App: React.FC = () => {
             <Sparkles size={24} />
           </button>
           <button onClick={handleLogout} className="w-12 h-12 rounded-xl flex items-center justify-center text-red-300 hover:bg-red-500/20 transition-all"><LogOut size={24} /></button>
-        </div>
-      </nav>
+		</div>
+	</nav>
 
       {/* Mobile Tab Bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#0F172A] border-t border-white/10 flex items-center justify-around px-6 z-[200]">
@@ -379,54 +379,19 @@ const App: React.FC = () => {
         {view === 'dashboard' && <Dashboard products={products} customers={customers} transactions={filteredTransactions.filter(t => !t.isArchived)} expenses={expenses} onNavigate={setView} businessProfile={businessProfile} onOpenManualSale={() => setIsManualSaleModalOpen(true)} />}
         {view === 'finance' && (
           <LedgerView
-            transactions={transactions}
-            expenses={expenses}
-            filters={filters}
-            setFilters={setFilters}
-            products={products}
-            customers={customers}
-            vipThreshold={businessProfile?.vipThreshold || 5}
-            onViewInvoice={setViewingTransaction}
-            onArchive={(id) => setTransactions(prev => prev.map(t => t.id === id ? { ...t, isArchived: !t.isArchived } : t))}
-            onEdit={setEditingTransaction}
-            currency={currency}
-            onStatusChange={handleUpdateTransactionStatus}
-            onAddExpense={(e) => setExpenses(prev => [{ ...e, id: Math.random().toString() }, ...prev])}
-            businessProfile={businessProfile!}
-            onWalletCreate={handleWalletCreate}
-            onWalletTransfer={handleWalletTransfer}
-          />
-        )}
-        {view === 'assets' && (
-          <AssetsView
-            products={products}
-            customers={customers}
-            transactions={transactions}
-            onOpenAddProduct={() => setIsAddProductModalOpen(true)}
-            onOpenAddCustomer={() => setIsAddCustomerModalOpen(true)}
-            setProducts={handleUpdateStock}
-            businessProfile={businessProfile}
-            onViewInvoice={setViewingTransaction}
-          />
-        )}
-        {view === 'orders' && (
-          <SalesView
-            transactions={transactions}
-            filters={filters}
-            setFilters={setFilters}
-            products={products}
-            customers={customers}
-            vipThreshold={businessProfile?.vipThreshold || 5}
-            onViewInvoice={setViewingTransaction}
-            onArchive={(id) => setTransactions(prev => prev.map(t => t.id === id ? { ...t, isArchived: !t.isArchived } : t))}
-            onEdit={setEditingTransaction}
-            currency={currency}
-            onStatusChange={handleUpdateTransactionStatus}
-          />
-          {/* Attach global handler for LogOrderModal submission */}
-          <script dangerouslySetInnerHTML={{
-            __html: `
-              window.handleAddOrder = function(order) {
+            <SalesView
+              transactions={transactions}
+              filters={filters}
+              setFilters={setFilters}
+              products={products}
+              customers={customers}
+              vipThreshold={businessProfile?.vipThreshold || 5}
+              onViewInvoice={setViewingTransaction}
+              onArchive={(id) => setTransactions(prev => prev.map(t => t.id === id ? { ...t, isArchived: !t.isArchived } : t))}
+              onEdit={setEditingTransaction}
+              currency={currency}
+              onStatusChange={handleUpdateTransactionStatus}
+              onAddOrder={order => {
                 const id = 'order_' + Math.random().toString(36).substr(2, 9);
                 const now = new Date().toISOString();
                 const transaction = {
@@ -446,12 +411,15 @@ const App: React.FC = () => {
                   editHistory: [],
                   items: [{ productName: order.product, quantity: order.quantity, unitPrice: order.unitPrice }],
                 };
-                window.dispatchEvent(new CustomEvent('addOrder', { detail: transaction }));
-              };
-              window.addEventListener('addOrder', function(e) {
-                if (window.__setTransactions) {
-                  window.__setTransactions(e.detail);
+                setTransactions(prev => [transaction, ...prev]);
+                // Auto-generate document
+                if (order.isPaid) {
+                  setViewingTransaction(transaction); // Receipt
+                } else {
+                  setViewingTransaction(transaction); // Invoice
                 }
+              }}
+            />
               });
             `
           }} />
