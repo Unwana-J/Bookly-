@@ -15,7 +15,9 @@ import {
   Bell,
   Check,
   CreditCard,
-  BookText
+  BookText,
+  TrendingUp,
+  Package
 } from 'lucide-react';
 import { Product, Customer, Transaction, AppView, SalesSource, ExtractedSale, ExtractedProduct, BusinessProfile, Expense, ExtractedExpense, FilterState, Notification, TransactionStatus, WalletProfile, WalletTransaction } from './types';
 import Inventory from './components/Inventory';
@@ -39,6 +41,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<AppView>('onboarding');
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
   const [isHoverBotActive, setIsHoverBotActive] = useState(false);
+  const [isMobileFloatingBotOpen, setIsMobileFloatingBotOpen] = useState(false);
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false);
   const [isManualSaleModalOpen, setIsManualSaleModalOpen] = useState(false);
@@ -288,9 +291,9 @@ const App: React.FC = () => {
           <span className="text-[#0F172A] font-black text-xl">B</span>
         </div>
         <NavItem active={view === 'dashboard'} icon={<LayoutDashboard size={24} />} onClick={() => setView('dashboard')} label="Home" />
-        <NavItem active={view === 'ledger'} icon={<BookText size={24} />} onClick={() => setView('ledger')} label="Ledger" />
-        <NavItem active={view === 'inventory'} icon={<ShoppingBag size={24} />} onClick={() => setView('inventory')} label="Stock" />
-        <NavItem active={view === 'crm'} icon={<Users size={24} />} onClick={() => setView('crm')} label="CRM" />
+        <NavItem active={view === 'finance'} icon={<TrendingUp size={24} />} onClick={() => setView('finance')} label="Finance" />
+        <NavItem active={view === 'assets'} icon={<ShoppingBag size={24} />} onClick={() => setView('assets')} label="Assets" />
+        <NavItem active={view === 'orders'} icon={<Package size={24} />} onClick={() => setView('orders')} label="Orders" />
         <NavItem active={view === 'settings'} icon={<SettingsIcon size={24} />} onClick={() => setView('settings')} label="Setup" />
 
         <div className="mt-auto space-y-4">
@@ -307,22 +310,45 @@ const App: React.FC = () => {
       {/* Mobile Tab Bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#0F172A] border-t border-white/10 flex items-center justify-around px-6 z-[200]">
         <MobileNavItem active={view === 'dashboard'} icon={<LayoutDashboard size={24} />} onClick={() => setView('dashboard')} />
-        <MobileNavItem active={view === 'ledger'} icon={<BookText size={24} />} onClick={() => setView('ledger')} />
-        <div className="relative -top-6">
-          <button
-            onClick={() => setIsHoverBotActive(!isHoverBotActive)}
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl transition-all ${isHoverBotActive ? 'bg-[#2DD4BF] text-[#0F172A]' : 'bg-white text-[#0F172A]'}`}
-          >
-            <Sparkles size={28} />
-          </button>
-        </div>
-        <MobileNavItem active={view === 'inventory'} icon={<ShoppingBag size={24} />} onClick={() => setView('inventory')} />
+        <MobileNavItem active={view === 'finance'} icon={<TrendingUp size={24} />} onClick={() => setView('finance')} />
+        <MobileNavItem active={view === 'assets'} icon={<ShoppingBag size={24} />} onClick={() => setView('assets')} />
+        <MobileNavItem active={view === 'orders'} icon={<Package size={24} />} onClick={() => setView('orders')} />
         <MobileNavItem active={view === 'settings'} icon={<SettingsIcon size={24} />} onClick={() => setView('settings')} />
       </nav>
 
+      {/* Mobile Floating AI Bot Modal */}
+      {isMobileFloatingBotOpen && (
+        <div className="md:hidden fixed inset-0 bg-black/50 z-[300] flex items-end">
+          <div className="w-full bg-[#0F172A] rounded-t-3xl border border-white/10">
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#2DD4BF] rounded-lg flex items-center justify-center">
+                  <Sparkles size={20} className="text-[#0F172A]" />
+                </div>
+                <h3 className="text-white font-black">AI Assistant</h3>
+              </div>
+              <button onClick={() => setIsMobileFloatingBotOpen(false)} className="text-slate-400 hover:text-white">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="h-[60vh] overflow-hidden">
+              <HoverBot inventory={products} onConfirmSale={(s) => { setPendingSale(s); setIsMobileFloatingBotOpen(false); }} onConfirmProduct={(p) => { handleUpdateStock([...products, { ...p, id: Math.random().toString(), totalSales: 0 }]); setIsMobileFloatingBotOpen(false); }} onConfirmExpense={(e) => { setExpenses(prev => [{ ...e, id: Math.random().toString(), timestamp: new Date().toISOString() }, ...prev]); setIsMobileFloatingBotOpen(false); }} isActive={true} setIsActive={setIsMobileFloatingBotOpen} businessProfile={businessProfile} customers={customers} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Floating AI Bot Button */}
+      <button
+        onClick={() => setIsMobileFloatingBotOpen(!isMobileFloatingBotOpen)}
+        className="md:hidden fixed bottom-24 right-6 z-[250] w-14 h-14 rounded-2xl bg-[#2DD4BF] text-[#0F172A] flex items-center justify-center shadow-2xl hover:shadow-xl transition-all"
+      >
+        <Sparkles size={28} />
+      </button>
+
       <main className="flex-1 px-6 md:px-8 md:pl-28 lg:pl-32 max-w-[1440px] mx-auto w-full pt-16 md:pt-16 pb-32 md:pb-8 min-h-screen">
         {view === 'dashboard' && <Dashboard products={products} customers={customers} transactions={filteredTransactions.filter(t => !t.isArchived)} expenses={expenses} onNavigate={setView} businessProfile={businessProfile} onOpenManualSale={() => setIsManualSaleModalOpen(true)} />}
-        {view === 'ledger' && (
+        {view === 'finance' && (
           <LedgerView
             transactions={transactions}
             expenses={expenses}
@@ -342,8 +368,10 @@ const App: React.FC = () => {
             onWalletTransfer={handleWalletTransfer}
           />
         )}
-        {view === 'inventory' && <Inventory products={products} setProducts={handleUpdateStock} onOpenAddProduct={() => setIsAddProductModalOpen(true)} businessProfile={businessProfile} />}
+        {view === 'assets' && <Inventory products={products} setProducts={handleUpdateStock} onOpenAddProduct={() => setIsAddProductModalOpen(true)} businessProfile={businessProfile} />}
+        {view === 'orders' && <CRM customers={customers} transactions={transactions} businessProfile={businessProfile} onOpenAddCustomer={() => setIsAddCustomerModalOpen(true)} onViewInvoice={setViewingTransaction} />}
         {view === 'crm' && <CRM customers={customers} transactions={transactions} businessProfile={businessProfile} onOpenAddCustomer={() => setIsAddCustomerModalOpen(true)} onViewInvoice={setViewingTransaction} />}
+        {view === 'inventory' && <Inventory products={products} setProducts={handleUpdateStock} onOpenAddProduct={() => setIsAddProductModalOpen(true)} businessProfile={businessProfile} />}
         {view === 'settings' && <Settings businessProfile={businessProfile} setBusinessProfile={setBusinessProfile} />}
       </main>
 

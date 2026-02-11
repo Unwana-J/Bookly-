@@ -201,7 +201,7 @@ export interface BusinessProfile {
 
 export type ExtractionResult = ExtractedSale | ExtractedProduct | ExtractedExpense;
 
-export type AppView = 'inventory' | 'crm' | 'settings' | 'onboarding' | 'dashboard' | 'ledger';
+export type AppView = 'crm' | 'inventory' | 'settings' | 'onboarding' | 'dashboard' | 'finance' | 'orders' | 'assets';
 
 export interface FilterState {
   customerHandles: string[];
