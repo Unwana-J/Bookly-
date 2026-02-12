@@ -75,10 +75,10 @@ const Dashboard: React.FC<DashboardProps> = ({ products, customers, transactions
   const metrics = useMemo(() => {
     const revenue = transactions.reduce((sum, t) => sum + t.total, 0);
     const cogs = transactions.reduce((sum, t) => sum + (t.costTotal || 0), 0);
-    const overhead = expenses.reduce((sum, e) => sum + e.amount, 0);
-    const netProfit = revenue - cogs - overhead;
+    const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const netProfit = revenue - cogs - totalExpenses;
     const margin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
-    return { revenue, netProfit, overhead, margin, count: transactions.length };
+    return { revenue, netProfit, totalExpenses, margin, count: transactions.length };
   }, [transactions, expenses]);
 
   const trendData = useMemo(() => {
@@ -135,9 +135,9 @@ const Dashboard: React.FC<DashboardProps> = ({ products, customers, transactions
       {widgets.statCards && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard label="Gross Revenue" value={`${currency}${metrics.revenue.toLocaleString()}`} trend={`${metrics.count} sales`} icon={<TrendingUp className="text-[#2DD4BF]" size={18} />} />
-          <StatCard label="Overhead" value={`${currency}${metrics.overhead.toLocaleString()}`} trend="Logged costs" icon={<Wallet className="text-red-500" size={18} />} />
+          <StatCard label="Expense" value={`${currency}${metrics.totalExpenses.toLocaleString()}`} trend="Logged costs" icon={<Wallet className="text-red-500" size={18} />} />
           <StatCard label="Net Profit" value={`${currency}${metrics.netProfit.toLocaleString()}`} trend={`${Math.round(metrics.margin)}% margin`} icon={<DollarSign className="text-emerald-600" size={18} />} />
-          <StatCard label="Contacts" value={customers.length.toString()} trend="Active directory" icon={<UsersIcon className="text-blue-500" size={18} />} />
+          <StatCard label="Contacts" value={customers.length > 0 ? customers.length.toString() : '0'} trend="Active directory" icon={<UsersIcon className="text-blue-500" size={18} />} />
         </div>
       )}
 
@@ -224,10 +224,10 @@ const Dashboard: React.FC<DashboardProps> = ({ products, customers, transactions
           <div className="cyber-border p-6 space-y-6 card-shadow">
             <h2 className="text-xl font-black text-[#0F172A] flex justify-between items-center">Quick Actions <Zap size={20} className="text-[#2DD4BF]" /></h2>
             <div className="grid grid-cols-2 gap-3">
-              <ActionButton icon={<ShoppingCart size={18} />} label="New Sale" onClick={onOpenManualSale} color="bg-emerald-500" />
+              <ActionButton icon={<ShoppingCart size={18} />} label="New Order" onClick={onOpenManualSale} color="bg-emerald-500" />
               <ActionButton icon={<Plus size={18} />} label="Add Stock" onClick={() => onNavigate('inventory')} color="bg-[#0F172A]" />
               <ActionButton icon={<UsersIcon size={18} />} label="New Lead" onClick={() => onNavigate('crm')} color="bg-blue-500" />
-              <ActionButton icon={<DollarSign size={18} />} label="Log Expense" onClick={() => onNavigate('ledger')} color="bg-red-500" />
+              <ActionButton icon={<DollarSign size={18} />} label="Log Expense" onClick={() => onNavigate('finance')} color="bg-red-500" />
             </div>
           </div>
         )}

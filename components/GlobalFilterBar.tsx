@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { FilterState, SalesSource, Product, Customer, TransactionStatus } from '../types';
-import { 
-  X, Filter, Calendar, User, Globe, Package, Award, 
+import {
+  X, Filter, Calendar, User, Globe, Package, Award,
   ChevronDown, RotateCcw, Check, Search, CreditCard
 } from 'lucide-react';
 
@@ -38,29 +38,28 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
   };
 
   const toggleItem = <T,>(list: T[], item: T, key: keyof FilterState) => {
-    const newList = list.includes(item) 
+    const newList = list.includes(item)
       ? list.filter(i => i !== item)
       : [...list, item];
     setFilters({ ...filters, [key]: newList });
   };
 
-  const hasActiveFilters = 
-    filters.customerHandles.length > 0 || 
-    filters.platforms.length > 0 || 
+  const hasActiveFilters =
+    filters.customerHandles.length > 0 ||
+    filters.platforms.length > 0 ||
     filters.status.length > 0 ||
-    filters.dateRange.start !== '' || 
-    filters.months.length > 0 || 
-    filters.productNames.length > 0 || 
+    filters.dateRange.start !== '' ||
+    filters.months.length > 0 ||
+    filters.productNames.length > 0 ||
     filters.tiers.length > 0;
 
   return (
     <div className="relative z-[150] mb-6">
       <div className="flex flex-wrap items-center gap-3">
-        <button 
+        <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`h-11 px-5 rounded-2xl flex items-center gap-2 font-bold text-sm transition-all border ${
-            isOpen ? 'bg-white text-black border-white' : 'bg-white/5 text-gray-400 border-white/10 hover:border-white/20'
-          }`}
+          className={`h-11 px-5 rounded-2xl flex items-center gap-2 font-bold text-sm transition-all border ${isOpen ? 'bg-[#0F172A] text-white border-[#0F172A]' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+            }`}
         >
           <Filter size={16} />
           <span>Filter Ledger</span>
@@ -72,7 +71,7 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
         </button>
 
         {hasActiveFilters && (
-          <button 
+          <button
             onClick={clearAll}
             className="h-11 px-5 rounded-2xl bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all flex items-center gap-2 font-bold text-sm"
           >
@@ -93,7 +92,7 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
             <FilterChip key={t} label={t} onRemove={() => toggleItem(filters.tiers, t, 'tiers')} />
           ))}
           {filters.dateRange.start && (
-            <FilterChip label={`${filters.dateRange.start} → ${filters.dateRange.end || '...'}`} onRemove={() => setFilters({...filters, dateRange: {start: '', end: ''}})} />
+            <FilterChip label={`${filters.dateRange.start} → ${filters.dateRange.end || '...'}`} onRemove={() => setFilters({ ...filters, dateRange: { start: '', end: '' } })} />
           )}
           {filters.months.map(m => (
             <FilterChip key={m} label={MONTHS[m]} onRemove={() => toggleItem(filters.months, m, 'months')} />
@@ -107,19 +106,18 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
       {isOpen && (
         <div className="absolute top-14 left-0 w-full md:w-[640px] bg-[#111] border border-white/10 rounded-[32px] shadow-2xl p-8 animate-in zoom-in-95 duration-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+
             <div className="space-y-4">
               <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
                 <Globe size={12} /> Source Channels
               </h4>
               <div className="flex flex-wrap gap-2">
                 {SOURCES.map(source => (
-                  <button 
+                  <button
                     key={source}
                     onClick={() => toggleItem(filters.platforms, source, 'platforms')}
-                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase border transition-all ${
-                      filters.platforms.includes(source) ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' : 'bg-white/5 border-white/5 text-gray-500 hover:border-white/20'
-                    }`}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase border transition-all ${filters.platforms.includes(source) ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' : 'bg-white/5 border-white/5 text-gray-500 hover:border-white/20'
+                      }`}
                   >
                     {source}
                   </button>
@@ -133,12 +131,11 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
               </h4>
               <div className="flex flex-wrap gap-2">
                 {STATUSES.map(status => (
-                  <button 
+                  <button
                     key={status}
                     onClick={() => toggleItem(filters.status, status, 'status')}
-                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase border transition-all ${
-                      filters.status.includes(status) ? 'bg-amber-500/20 border-amber-500 text-amber-400' : 'bg-white/5 border-white/5 text-gray-500 hover:border-white/20'
-                    }`}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase border transition-all ${filters.status.includes(status) ? 'bg-amber-500/20 border-amber-500 text-amber-400' : 'bg-white/5 border-white/5 text-gray-500 hover:border-white/20'
+                      }`}
                   >
                     {status}
                   </button>
@@ -152,12 +149,11 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
               </h4>
               <div className="flex flex-wrap gap-2">
                 {TIERS.map(tier => (
-                  <button 
+                  <button
                     key={tier}
                     onClick={() => toggleItem(filters.tiers, tier, 'tiers')}
-                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase border transition-all ${
-                      filters.tiers.includes(tier) ? 'bg-blue-500/20 border-blue-500 text-blue-400' : 'bg-white/5 border-white/5 text-gray-500 hover:border-white/20'
-                    }`}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase border transition-all ${filters.tiers.includes(tier) ? 'bg-blue-500/20 border-blue-500 text-blue-400' : 'bg-white/5 border-white/5 text-gray-500 hover:border-white/20'
+                      }`}
                   >
                     {tier}
                   </button>
@@ -171,12 +167,11 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
               </h4>
               <div className="grid grid-cols-4 gap-1">
                 {MONTHS.map((m, i) => (
-                  <button 
+                  <button
                     key={m}
                     onClick={() => toggleItem(filters.months, i, 'months')}
-                    className={`py-1 rounded-lg text-[9px] font-black uppercase border transition-all ${
-                      filters.months.includes(i) ? 'bg-white text-black border-white' : 'bg-white/5 border-white/5 text-gray-600'
-                    }`}
+                    className={`py-1 rounded-lg text-[9px] font-black uppercase border transition-all ${filters.months.includes(i) ? 'bg-white text-black border-white' : 'bg-white/5 border-white/5 text-gray-600'
+                      }`}
                   >
                     {m.substr(0, 3)}
                   </button>
@@ -190,12 +185,11 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
               </h4>
               <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto pr-2 custom-scrollbar">
                 {products.map(product => (
-                  <button 
+                  <button
                     key={product.id}
                     onClick={() => toggleItem(filters.productNames, product.name, 'productNames')}
-                    className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase border transition-all ${
-                      filters.productNames.includes(product.name) ? 'bg-white/10 border-white text-white' : 'bg-white/5 border-white/5 text-gray-500 hover:border-white/20'
-                    }`}
+                    className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase border transition-all ${filters.productNames.includes(product.name) ? 'bg-white/10 border-white text-white' : 'bg-white/5 border-white/5 text-gray-500 hover:border-white/20'
+                      }`}
                   >
                     {product.name}
                   </button>
@@ -205,7 +199,7 @@ const GlobalFilterBar: React.FC<GlobalFilterBarProps> = ({ filters, setFilters, 
           </div>
 
           <div className="mt-8 flex justify-end pt-6 border-t border-white/5">
-            <button 
+            <button
               onClick={() => setIsOpen(false)}
               className="px-12 h-14 bg-white text-black font-black rounded-3xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-xs uppercase tracking-widest"
             >

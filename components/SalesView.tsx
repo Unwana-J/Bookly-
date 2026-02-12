@@ -28,6 +28,7 @@ import {
   Check
 } from 'lucide-react';
 import GlobalFilterBar from './GlobalFilterBar';
+import LogOrderModal from './LogOrderModal';
 
 interface SalesViewProps {
   transactions: Transaction[];
@@ -41,6 +42,7 @@ interface SalesViewProps {
   onEdit: (transaction: Transaction) => void;
   currency: string;
   onStatusChange: (id: string, status: TransactionStatus) => void;
+  onAddOrder?: (order: any) => void;
 }
 
 const SalesView: React.FC<SalesViewProps> = ({
@@ -54,10 +56,11 @@ const SalesView: React.FC<SalesViewProps> = ({
   onArchive,
   onEdit,
   currency,
-  onStatusChange
+  onStatusChange,
+  onAddOrder
 }) => {
   const [showArchived, setShowArchived] = useState(false);
-   const [showLogOrder, setShowLogOrder] = useState(false);
+  const [showLogOrder, setShowLogOrder] = useState(false);
 
   const displayedTransactions = transactions.filter(t => t.isArchived === showArchived);
 
@@ -88,73 +91,45 @@ const SalesView: React.FC<SalesViewProps> = ({
     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 pb-12">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-[#0F172A]">Sales Ledger</h1>
+          <h1 className="text-3xl font-black tracking-tight text-[#0F172A]">Order Management</h1>
           <p className="text-[#64748B] mt-1 font-medium italic">Audit confirmed sales & payment health.</p>
         </div>
         <div className="flex gap-3">
           <button
             onClick={exportPDF}
-            className="h-11 px-5 rounded-2xl bg-[#0F172A] text-white font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:opacity-90 shadow-xl transition-all"
+            className="h-11 px-5 rounded-2xl bg-white border border-slate-200 text-slate-600 font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 hover:border-slate-300 transition-all"
           >
-            <Printer size={16} /> Export PDF Report
+            <Printer size={16} /> Export PDF
           </button>
           <button
             onClick={() => setShowLogOrder(true)}
-            className="h-11 px-5 rounded-2xl bg-emerald-600 text-white font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-emerald-700 shadow-xl transition-all"
+            className="h-11 px-5 rounded-2xl bg-[#0F172A] text-white font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:opacity-90 shadow-xl transition-all"
           >
             + Add Order
-          </button>
-          <button
-            onClick={() => setShowArchived(!showArchived)}
-            className={`h-11 px-5 rounded-2xl flex items-center gap-2 font-black text-xs uppercase tracking-widest transition-all border ${showArchived ? 'bg-red-50 text-red-500 border-red-200' : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-400'
-              }`}
-          >
-            {showArchived ? <Eye size={16} /> : <Archive size={16} />}
-            <span>{showArchived ? 'Archived Records' : 'Archive Bin'}</span>
           </button>
         </div>
       </header>
 
+      {/* Log Order Modal */}
+      <LogOrderModal
+        open={showLogOrder}
+        onClose={() => setShowLogOrder(false)}
+        products={products}
+        customers={customers}
+        onSubmit={order => {
+          if (typeof onAddOrder === 'function') {
+            onAddOrder(order);
+          }
+        }}
+      />
+
       {/* Summary Cards */}
-            {/* Log Order Modal */}
-            <LogOrderModal
-              open={showLogOrder}
-              onClose={() => setShowLogOrder(false)}
-              products={products}
-              customers={customers}
-              onSubmit={order => {
-                if (typeof onAddOrder === 'function') {
-                  onAddOrder(order);
-                }
-              }}
-            />
-  onAddOrder?: (order: any) => void;
-}
-
-const SalesView: React.FC<SalesViewProps> = ({
-  transactions,
-  filters,
-  setFilters,
-  products,
-  customers,
-  vipThreshold,
-  onViewInvoice,
-  onArchive,
-  onEdit,
-  currency,
-  onStatusChange,
-  onAddOrder
-}) => {
-
-            {/* Summary Cards */}
-      import GlobalFilterBar from './GlobalFilterBar';
-      import LogOrderModal from './LogOrderModal';
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="cyber-border p-6 rounded-[32px] space-y-1 bg-white">
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Filtered Volume</p>
           <p className="text-2xl font-black text-[#0F172A] font-mono">{currency}{stats.vol.toLocaleString()}</p>
         </div>
-        <div className="cyber-border p-6 rounded-[32px] space-y-1 bg-[#F0FDF4] border-[#2DD4BF]/20">
+        <div className="cyber-border p-6 rounded-[32px] space-y-1 bg-white border-[#2DD4BF]/20">
           <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">Estimated Profit</p>
           <p className="text-2xl font-black text-emerald-600 font-mono">{currency}{stats.profit.toLocaleString()}</p>
         </div>

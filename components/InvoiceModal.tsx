@@ -30,10 +30,10 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, onClose, transactio
 
   const handleShare = async () => {
     const text = `Invoice from ${businessProfile?.name || 'Bookly Store'}\n\n` +
-                 `Item: ${transaction.productName}\n` +
-                 `Quantity: ${transaction.quantity}\n` +
-                 `Total: ${currency}${transaction.total}\n\n` +
-                 `Thank you for your purchase!`;
+      `Item: ${transaction.productName}\n` +
+      `Quantity: ${transaction.quantity}\n` +
+      `Total: ${currency}${transaction.total}\n\n` +
+      `Thank you for your purchase!`;
 
     if (navigator.share) {
       try {
@@ -52,9 +52,9 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, onClose, transactio
   };
 
   return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
       <div className="w-full max-w-2xl h-full max-h-[90vh] flex flex-col bg-white text-black rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95">
-        
+
         {/* Header Actions */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50/50">
           <div className="flex items-center gap-2">
@@ -63,25 +63,25 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, onClose, transactio
             </div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Transaction Finalized</p>
-              <h2 className="text-lg font-black leading-tight">Sales Invoice</h2>
+              <h2 className="text-lg font-black leading-tight">{transaction.status === 'paid' ? 'Sale Receipt' : 'Sales Invoice'}</h2>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button 
+            <button
               onClick={handleShare}
               className="p-3 bg-gray-100 hover:bg-gray-200 rounded-2xl transition-all"
               title="Share Invoice"
             >
               <Share2 size={20} className="text-black" />
             </button>
-            <button 
+            <button
               onClick={handlePrint}
               className="p-3 bg-gray-100 hover:bg-gray-200 rounded-2xl transition-all"
               title="Download/Print"
             >
               <Download size={20} className="text-black" />
             </button>
-            <button 
+            <button
               onClick={onClose}
               className="ml-2 px-4 h-11 bg-black text-white text-xs font-black uppercase tracking-widest rounded-xl flex items-center gap-2 hover:bg-gray-800 transition-all"
             >
@@ -110,9 +110,9 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, onClose, transactio
                 </div>
               </div>
 
-              <div className="text-left md:text-right space-y-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-300">Invoice ID</p>
-                <p className="font-mono font-bold text-lg uppercase tracking-tighter">#{transaction.id.substr(0, 8)}</p>
+              <div className="text-right">
+                <p className="text-xs uppercase tracking-widest text-slate-400 font-black">{transaction.status === 'paid' ? 'Receipt' : 'Invoice'}</p>
+                <p className="text-lg font-mono font-bold text-[#0F172A] mt-1 uppercase tracking-tighter">#{transaction.id.substr(0, 8)}</p>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-300 mt-4">Date Issued</p>
                 <p className="font-bold">{dateStr}</p>
               </div>
@@ -199,7 +199,7 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, onClose, transactio
 
         {/* Mobile Action Footer */}
         <div className="p-6 border-t border-gray-100 flex flex-col gap-3 md:hidden">
-           <button 
+          <button
             onClick={handleShare}
             className="w-full h-14 bg-black text-white font-black rounded-2xl flex items-center justify-center gap-2"
           >

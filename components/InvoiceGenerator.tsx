@@ -35,15 +35,18 @@ export const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
         doc.text(`Email: ${businessProfile.email || 'N/A'}`, 20, 28);
         doc.text(`Phone: ${businessProfile.phone || 'N/A'}`, 20, 34);
 
-        // Invoice Title
+        // Document Title
+        const isPaid = transaction.status === 'paid';
+        const docTitle = isPaid ? 'SALE RECEIPT' : 'INVOICE';
+
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
-        doc.text('INVOICE', 20, 50);
+        doc.text(docTitle, 20, 50);
 
         // Invoice Details
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
-        doc.text(`Invoice #: ${transaction.id.substring(0, 8).toUpperCase()}`, 20, 60);
+        doc.text(`${isPaid ? 'Receipt' : 'Invoice'} #: ${transaction.id.substring(0, 8).toUpperCase()}`, 20, 60);
         doc.text(`Date: ${invoiceDate}`, 20, 66);
         doc.text(`Customer: ${transaction.customerHandle}`, 20, 72);
 
@@ -122,7 +125,7 @@ export const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
             <div className="w-full max-w-2xl bg-white border border-slate-100 rounded-[40px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-8 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
-                    <h2 className="text-2xl font-black text-[#0F172A]">Invoice</h2>
+                    <h2 className="text-2xl font-black text-[#0F172A]">{transaction.status === 'paid' ? 'Sale Receipt' : 'Invoice'}</h2>
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-slate-100 rounded-full transition-colors"
@@ -145,7 +148,7 @@ export const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                                 <p className="text-sm text-slate-500">{businessProfile.phone}</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-xs uppercase tracking-widest text-slate-400 font-black">Invoice</p>
+                                <p className="text-xs uppercase tracking-widest text-slate-400 font-black">{transaction.status === 'paid' ? 'Receipt' : 'Invoice'}</p>
                                 <p className="text-lg font-mono font-bold text-[#0F172A] mt-1">
                                     #{transaction.id.substring(0, 8).toUpperCase()}
                                 </p>
